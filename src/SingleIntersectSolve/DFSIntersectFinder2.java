@@ -28,7 +28,7 @@ public class DFSIntersectFinder2 {
 		SolutionResolverInterface solutionResolver = null;
 		
 		
-		if(Utils.getTotalArea(cuboidToBuild.getDimensions()) != Utils.getTotalArea(cuboidToBringAlong.getDimensions())) {
+		if(Utils.getTotalAreaLid(cuboidToBuild.getDimensions()) != Utils.getTotalAreaLid(cuboidToBringAlong.getDimensions())) {
 			System.out.println("ERROR: The two cuboid to intersect don't have the same area.");
 			System.exit(1);
 		}
@@ -220,6 +220,7 @@ public class DFSIntersectFinder2 {
 				//Maybe put this right after the contains key if condition? (regions[regionIndex].getCellIndexToOrderOfDev().containsKey(indexToUse))
 			}*/
 
+			
 			CoordWithRotationAndIndex neighbours[] = cuboid.getNeighbours(indexToUse);
 			
 			int curRotation = cuboid.getRotationPaperRelativeToMap(indexToUse);
@@ -245,7 +246,8 @@ public class DFSIntersectFinder2 {
 				}
 
 				int neighbourIndexCuboid2 = (dirNewCellAdd - curRotationCuboid2 + NUM_ROTATIONS) % NUM_ROTATIONS;
-				
+
+
 				if(cuboidToBringAlongStartRot.getNeighbours(indexToUse2)[neighbourIndexCuboid2] == null) {
 					//went off the lid for the 2nd cuboid:
 					continue;
@@ -426,6 +428,10 @@ public class DFSIntersectFinder2 {
 			//There's a 180 rotation because the neighbour is attaching to the new cell (so it's flipped!)
 			int neighbourIndexNeeded = (rotReq + ONE_EIGHTY_ROTATION - rotationOtherCell+ NUM_ROTATIONS) % NUM_ROTATIONS;
 
+			if(cuboid.getNeighbours(indexOtherCell)[neighbourIndexNeeded] == null) {
+				continue;
+			}
+			
 			if(cuboid.getNeighbours(indexOtherCell)[neighbourIndexNeeded].getIndex() != indexNewCell) {
 				//In this case, there's an implied hole...
 				// I want to see what happens when we allow this...

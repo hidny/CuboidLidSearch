@@ -20,17 +20,12 @@ public class Utils {
 		temp_numbering[2] = new int[a][b];
 		temp_numbering[3] = new int[a][c];
 		temp_numbering[4] = new int[a][b];
-		temp_numbering[5] = null; // Open the lid
+		temp_numbering[5] = new int[c][b];
 		
 		int currentNum = 0;
 		
 		
 		for(int i=0; i<temp_numbering.length; i++) {
-			
-			if(temp_numbering[i] == null) {
-				continue;
-			}
-			
 			for(int j=0; j<temp_numbering[i].length; j++) {
 				for(int k=0; k<temp_numbering[i][j].length; k++) {
 					temp_numbering[i][j][k] = currentNum;
@@ -55,9 +50,6 @@ public class Utils {
 		Coord numberingInv[] = new Coord[getTotalArea(a, b, c)];
 				
 		for(int i=0; i<temp_numbering.length; i++) {
-			if(temp_numbering[i] == null) {
-				continue;
-			}
 			for(int j=0; j<temp_numbering[i].length; j++) {
 				for(int k=0; k<temp_numbering[i][j].length; k++) {
 
@@ -88,7 +80,18 @@ public class Utils {
 		return getTotalArea(array[0], array[1], array[2]);
 	}
 	public static int getTotalArea(int a, int b, int c) {
-		return 2*(a*b + a*c + b*c) - c*b;
+		return 2*(a*b + a*c + b*c);
+	}
+	
+	public static int getTotalAreaLid(int array[]) {
+		if(array.length != 3) {
+			System.out.println("ERROR in getTotalAreaLid: there isn't 3 dimensions!");
+			System.exit(1);
+		}
+		return getTotalAreaLid(array[0], array[1], array[2]);
+	}
+	public static int getTotalAreaLid(int a, int b, int c) {
+		return 2*(a*b + a*c + b*c) - b*c;
 	}
 	
 	public static int[] getBorders(int array[][]) {

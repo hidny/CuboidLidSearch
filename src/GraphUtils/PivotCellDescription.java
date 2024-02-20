@@ -130,7 +130,7 @@ Cell and rotation: 4 and 1
 		ArrayList<PivotCellDescription> listPivots = new ArrayList<PivotCellDescription>();
 		
 		System.out.println("Get arrays created:");
-		for(int i=0; i<Model.Utils.getTotalArea(exampleCuboid.getDimensions()); i++) {
+		for(int i=0; i<Model.Utils.getTotalAreaLid(exampleCuboid.getDimensions()); i++) {
 			
 			System.out.println("Cell index " + i + ":");
 			for(int j=0; j<NUM_ROTATIONS; j++) {

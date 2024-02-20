@@ -12,6 +12,7 @@ public class NeighbourGraphCreator {
 	// TODO: I still need to test it against a 1x1x1 cube though...
 	
 	public static int NUM_NEIGHBOURS =4;
+	public static int SIDE_REMOVED_INDEX =5;
 
 	public static CoordWithRotationAndIndex[][] initNeighbourhood(int a, int b, int c) {
 
@@ -20,7 +21,7 @@ public class NeighbourGraphCreator {
 		Coord numberingInv[] = Utils.getFlatInverseNumberingOfCuboid(numbering, a, b, c);
 		
 		String ret1 = DataModelViews.getFlatNumberingView(a, b, c);
-		System.out.println("|" + ret1 + "|");
+		System.out.println("|" + ret1+"|");
 
 		System.out.println("Printed flattened cuboid with bonus square at bottom...");
 		
@@ -46,10 +47,14 @@ public class NeighbourGraphCreator {
 		neighboursTranspose[2] = handleBelowNeighbours(a, b, c, flatArray, numberingInv);
 		neighboursTranspose[3] = handleLeftNeighbours(a, b, c, flatArray, numberingInv);
 		
-		CoordWithRotationAndIndex neighbours[][] = new CoordWithRotationAndIndex[Utils.getTotalArea(a, b, c)][NUM_NEIGHBOURS];
+		CoordWithRotationAndIndex neighbours[][] = new CoordWithRotationAndIndex[Utils.getTotalAreaLid(a, b, c)][NUM_NEIGHBOURS];
 		
 		for(int i=0; i<neighbours.length; i++) {
 			for(int j=0; j<NUM_NEIGHBOURS; j++) {
+				if(neighboursTranspose[j][i].getA() == SIDE_REMOVED_INDEX) {
+					neighbours[i][j]  = null;
+					continue;
+				}
 				neighbours[i][j]  = neighboursTranspose[j][i];
 			}
 		}
@@ -59,19 +64,12 @@ public class NeighbourGraphCreator {
 			System.out.println("Neighbours for " + i + ":");
 			for(int j=0; j<NUM_NEIGHBOURS; j++) {
 
-				if(neighbours[i][j] == null) {
-					continue;
-				}
-				
-				int numNeighbour = -1;
-				if(numbering[neighbours[i][j].getA()] == null) {
-					neighbours[i][j] = null;
-					
-					continue;
-				} else {
-					numNeighbour = numbering[neighbours[i][j].getA()][neighbours[i][j].getB()][neighbours[i][j].getC()];
-				}
-				
+				 if(neighbours[i][j] == null) {
+					 	continue;
+				 }
+
+				int numNeighbour = numbering[neighbours[i][j].getA()][neighbours[i][j].getB()][neighbours[i][j].getC()];
+
 				if(neighbours[i][j].getRot() == 0) {
 					System.out.println(numNeighbour);
 					
@@ -165,6 +163,19 @@ public class NeighbourGraphCreator {
 					}
 					
 					
+				} else if(i == 2*c + 2*a - 1) {
+
+					//Weird opposite case:
+					//With 180 rotation
+					
+					int indexToUse = flatArray[0][j];
+					
+					ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 2, indexToUse);
+					//System.out.println(indexToUse + " is above " + curIndex + ". (with 180 rotation)");
+					
+					
+					
+					
 				}
 			}
 		}
@@ -245,6 +256,18 @@ public class NeighbourGraphCreator {
 						
 					}
 					
+				} else if(i == 2*c + a) {
+					
+					//Weird opposite case:
+					if(flatArray[i-1][j] >=0) {
+						//180 rotation:
+						int indexToUse = flatArray[i-1][j];
+						ret[curIndex] = new CoordWithRotationAndIndex(numberingInv[indexToUse], 2, indexToUse);
+						
+						//System.out.println(indexToUse + " is below " + curIndex + ". (180 degree rotation)");
+						
+						
+					}
 				}
 			}
 		}
@@ -414,7 +437,7 @@ public class NeighbourGraphCreator {
 			SPACE = SPACE + " ";
 		}
 		
-		int ret2[][] = new int[2*a + c][2*b + 2*c];
+		int ret2[][] = new int[2*a + 2*c][2*b + 2*c];
 		for(int i=0; i<ret2.length; i++) {
 			for(int j=0; j<ret2[0].length; j++) {
 				ret2[i][j] = -1;
@@ -496,7 +519,61 @@ public class NeighbourGraphCreator {
 			ret += "\n";
 		}
 		
+
+		//3rd row has 1 side:
+		ret += "\n";
 		
+		for(int i=0; i<c; i++) {
+			
+			for(int j=0; j < 2*b + 2 *c; j++) {
+
+				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
+					ret += " " + SPACE + " ";
+				}
+				
+				if(j >= c && j<c + b) {
+
+					int num = numbering[5][i][j - c];
+					ret += " " + SPACE.substring(((num) + "").length()) + num + " ";
+					
+
+					ret2[c + a + i][j] = num;
+					
+				} else {
+					ret += " " + SPACE + " ";
+				}
+			}
+			
+			ret += "\n";
+		}
+		
+		//Bonus 4th row:
+		ret += "\n";
+		
+		for(int i=0; i<a; i++) {
+			
+			for(int j=0; j < 2*b + 2 *c; j++) {
+
+				if( j == c || j == c + b || j == 2*c + b || j== 2*c + 2*b) {
+					ret += " " + SPACE + " ";
+				}
+				
+				if(j >= c && j<c + b) {
+
+					//Mind bender: It gets flipped!
+					// because it's a 3D cuboid or something!
+					int num = numbering[4][(a-1) - (i)][(b-1) - (j - c)];
+					ret += " " + SPACE.substring(((num) + "").length()) + num + " ";
+
+					ret2[2*c + a + i][j] = num;
+					
+				} else {
+					ret += " " + SPACE + " ";
+				}
+			}
+			
+			ret += "\n";
+		}
 		
 		return ret2;
 	}
@@ -517,13 +594,11 @@ public class NeighbourGraphCreator {
 		for(int i=0; i<flatArray.length; i++) {
 			
 
-			if( i == c || i == c + a ) {
-				if(i== c+a) {
-					break;
-				} else {
-
-					ret += "\n";
-				}
+			if(i== c + a) {
+				break;
+			}
+			if( i == c || i == c + a || i == 2*c + a || i== 2*c + 2*a) {
+				ret += "\n";
 			}
 			
 			for(int j=0; j<flatArray[0].length; j++) {
