@@ -459,7 +459,7 @@ public class DFSIntersectFinder2 {
 		
 		//solveCuboidIntersections(new CuboidToFoldOn(13, 1, 1), new CuboidToFoldOn(3, 3, 3));
 
-		solveCuboidIntersections(new CuboidLidToFoldOn(1, 1, 1), new CuboidLidToFoldOn(1, 1, 1));
+		solveCuboidIntersections(new CuboidLidToFoldOn(1, 7, 5), new CuboidLidToFoldOn(2, 11, 1));
 		
 		
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
