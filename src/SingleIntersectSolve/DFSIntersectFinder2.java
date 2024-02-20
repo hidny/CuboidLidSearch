@@ -54,7 +54,7 @@ public class DFSIntersectFinder2 {
 		
 
 		//TODO: LATER use hashes to help.. (record potential expansions, and no-nos...)
-		Coord2D paperToDevelop[] = new Coord2D[Utils.getTotalArea(cuboidToBuild.getDimensions())];
+		Coord2D paperToDevelop[] = new Coord2D[Utils.getTotalAreaLid(cuboidToBuild.getDimensions())];
 		for(int i=0; i<paperToDevelop.length; i++) {
 			paperToDevelop[i] = null;
 		}
@@ -120,7 +120,7 @@ public class DFSIntersectFinder2 {
 			
 			int topBottombridgeUsedNx1x1[] = new int[Utils.getTotalArea(cuboidToBuild.getDimensions())];
 			
-			long debugIterations[] = new long[Utils.getTotalArea(cuboidToBuild.getDimensions())];
+			long debugIterations[] = new long[Utils.getTotalAreaLid(cuboidToBuild.getDimensions())];
 			
 			HashMap<Integer, Integer> CellIndexToOrderOfDev = new HashMap <Integer, Integer>();
 			CellIndexToOrderOfDev.put(0, 0);
@@ -152,7 +152,7 @@ public class DFSIntersectFinder2 {
 			HashMap <Integer, Integer> CellIndexToOrderOfDev, int minIndexToUse, int minRotationToUse) {
 
 		numIterations++;
-		if(numCellsUsedDepth == cuboid.getNumCellsToFill()) {
+		if(numCellsUsedDepth == Utils.getTotalAreaLid(cuboid.getDimensions())) {
 
 			int indexes[][][] = new int[2][][];
 			indexes[0] = indexCuboidonPaper;
@@ -463,9 +463,8 @@ public class DFSIntersectFinder2 {
 		System.out.println("Fold Resolver Ordered Regions intersection skip symmetries Nx1x1:");
 
 		
-		//solveCuboidIntersections(new CuboidToFoldOn(13, 1, 1), new CuboidToFoldOn(3, 3, 3));
-
 		solveCuboidIntersections(new CuboidLidToFoldOn(1, 7, 5), new CuboidLidToFoldOn(2, 11, 1));
+		//solveCuboidIntersections(new CuboidLidToFoldOn(1, 1, 1), new CuboidLidToFoldOn(1, 1, 1));
 		
 		
 		System.out.println("Current UTC timestamp in milliseconds: " + System.currentTimeMillis());
